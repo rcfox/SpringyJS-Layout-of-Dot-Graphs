@@ -1,0 +1,51 @@
+BEGIN {
+	print("<html>
+<body onresize=\"resize();\" onload=\"resize();\"> 
+<script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js\"></script>
+<script src=\"springy.js\"></script>
+<script src=\"springyui.js\"></script>
+<script>
+function resize() {
+	var canvas = document.getElementById(\"graph\");
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+}
+");
+	string nodes;
+	string edges;
+}
+
+BEG_G {
+	print("var graph = new Graph();");
+}
+
+N {
+	string label = $.name;
+	if(hasAttr($,"label")) {
+		label = aget($,"label");
+	}
+	nodes = sprintf("%svar node%s = graph.newNode({label: '%s'});\n",nodes,$.name,label);
+}
+
+E {
+	edges = sprintf("%sgraph.newEdge(node%s, node%s);\n",edges,$.tail.name,$.head.name);
+}
+
+END_G {
+	print(nodes);
+	print(edges);
+	printf("jQuery(function(){
+	var springy = jQuery('#graph').springy({
+		graph: graph
+	});
+});\n");
+}
+
+END {
+	
+	print("</script>
+<canvas id=\"graph\" width=\"800\" height=\"600\" />\n
+</body>
+</html>
+");
+}
