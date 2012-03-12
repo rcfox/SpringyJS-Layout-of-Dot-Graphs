@@ -19,6 +19,7 @@ function resize() {
 ");
 	string nodes;
 	string edges;
+	string color;
 }
 
 BEG_G {
@@ -27,7 +28,7 @@ BEG_G {
 
 N {
 	string label = $.name;
-	string color = getDflt($G,"N","color");
+	color = getDflt($G,"N","color");
 	if(hasAttr($,"label")) {
 		label = aget($,"label");
 	}
@@ -39,7 +40,12 @@ N {
 }
 
 E {
-	edges = sprintf("%sgraph.newEdge(node%s, node%s);\n",edges,$.tail.name,$.head.name);
+	if(hasAttr($,"color")) {
+		color = aget($,"color");
+	} else {
+		color = "#000000";
+	}
+	edges = sprintf("%sgraph.newEdge(node%s, node%s).data.color = '%s';\n",edges,$.tail.name,$.head.name,color);
 }
 
 END_G {
