@@ -6,7 +6,7 @@
 
 BEGIN {
 	print("<html>
-<body onresize=\"resize();\" onload=\"resize();\"> 
+<body onresize=\"resize();\" onload=\"resize();\">
 <script src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js\"></script>
 <script src=\"springy.js\"></script>
 <script src=\"springyui.js\"></script>
@@ -27,10 +27,15 @@ BEG_G {
 
 N {
 	string label = $.name;
+	string color = getDflt($G,"N","color");
 	if(hasAttr($,"label")) {
 		label = aget($,"label");
 	}
-	nodes = sprintf("%svar node%s = graph.newNode({label: '%s'});\n",nodes,$.name,label);
+	if(hasAttr($,"color")) {
+		color = aget($,"color");
+	}
+
+	nodes = sprintf("%svar node%s = graph.newNode({label: '%s', color: '%s'});\n",nodes,$.name,label,color);
 }
 
 E {
@@ -48,7 +53,7 @@ END_G {
 }
 
 END {
-	
+
 	print("</script>
 <canvas id=\"graph\" width=\"800\" height=\"600\" />\n
 </body>
